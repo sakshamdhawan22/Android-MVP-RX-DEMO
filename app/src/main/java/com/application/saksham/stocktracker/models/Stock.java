@@ -1,15 +1,25 @@
 package com.application.saksham.stocktracker.models;
 
+
 /**
  * Created by Saksham Dhawan on 2/16/18.
  */
 
 public class Stock {
+    private String stockName;
     private float currentPrice;
     private float changeInPrice; // change from previous close price
     private boolean closed;
     private float intradayLowPrice;
     private float intradayHighPrice;
+
+    public String getStockName() {
+        return stockName;
+    }
+
+    public void setStockName(String stockName) {
+        this.stockName = stockName;
+    }
 
     public float getCurrentPrice() {
         return currentPrice;
@@ -60,4 +70,8 @@ public class Stock {
     }
 
     private float openingPrice;
+
+    public String getIncreaseDecreaseText() {
+        return changeInPrice > 0 ? "+" + changeInPrice : "-" + changeInPrice;
+    }
 }

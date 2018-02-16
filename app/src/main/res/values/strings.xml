@@ -2,4 +2,5 @@
     <string name="app_name">Stock Tracker</string>
     <string name="showing_stock_data_for">Showing stock data for</string>
     <string name="change"><u> change </u></string>
+    <string name="stock_name_invald">looks like this isn\'t a valid stock name. Please Retry.</string>
 </resources>

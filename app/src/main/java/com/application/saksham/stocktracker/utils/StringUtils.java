@@ -1,4 +1,4 @@
-package com.application.saksham.stocktracker.activities.utils;
+package com.application.saksham.stocktracker.utils;
 
 import android.content.Context;
 

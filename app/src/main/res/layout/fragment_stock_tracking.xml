@@ -1,41 +1,80 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="@dimen/default_screen_margin">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <TextView
-        android:id="@+id/textview_showing"
-        android:layout_centerHorizontal="true"
-        android:textSize="@dimen/medium_text_size"
-        android:text="@string/showing_stock_data_for"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <data>
 
+        <import type="android.view.View" />
 
-    <TextView
-        android:id="@+id/textview_current_stock"
-        android:textColor="@color/colorPrimary"
-        android:layout_below="@id/textview_showing"
-        android:layout_centerHorizontal="true"
-        android:textSize="@dimen/large_text_size"
-        android:text="GOOG"
-        android:layout_marginLeft="@dimen/default_screen_margin"
-        android:layout_marginRight="@dimen/default_screen_margin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <variable
+            name="stock"
+            type="com.application.saksham.stocktracker.models.Stock" />
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/default_screen_margin">
+
+        <TextView
+            android:id="@+id/textview_showing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="@string/showing_stock_data_for"
+            android:textSize="@dimen/medium_text_size" />
 
 
-    <TextView
-        android:textStyle=""
-        android:textColor="@android:color/holo_blue_light"
-        android:layout_below="@id/textview_current_stock"
-        android:layout_centerHorizontal="true"
-        android:textSize="@dimen/tiny_text_size"
-        android:text="@string/change"
-        android:layout_marginLeft="@dimen/default_screen_margin"
-        android:layout_marginRight="@dimen/default_screen_margin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/textview_current_stock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textview_showing"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/default_screen_margin"
+            android:layout_marginRight="@dimen/default_screen_margin"
+            android:text="@{stock.stockName}"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/large_text_size" />
 
-</RelativeLayout>
+
+        <TextView
+            android:id="@+id/button_change"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textview_current_stock"
+            android:layout_centerHorizontal="true"
+            android:paddingLeft="@dimen/default_screen_margin"
+            android:paddingRight="@dimen/default_screen_margin"
+            android:text="@string/change"
+            android:textColor="@android:color/holo_blue_light"
+            android:textSize="@dimen/tiny_text_size"
+            android:textStyle="" />
+
+        <TextView
+            android:id="@+id/textview_current_stock_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/button_change"
+            android:layout_centerHorizontal="true"
+            android:layout_marginRight="@dimen/small_margin"
+            android:text="@{``+stock.currentPrice}"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/large_text_size" />
+
+
+        <TextView
+            android:id="@+id/textview_current_stock_increase_decrease"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/textview_current_stock_price"
+            android:layout_alignBottom="@id/textview_current_stock_price"
+            android:gravity="center"
+            android:layout_toRightOf="@id/textview_current_stock_price"
+            android:text="@{``+stock.getIncreaseDecreaseText}"
+            android:textColor="@android:color/holo_blue_light"
+            android:textSize="@dimen/tiny_text_size"
+            android:textStyle="" />
+
+
+    </RelativeLayout>
+</layout>

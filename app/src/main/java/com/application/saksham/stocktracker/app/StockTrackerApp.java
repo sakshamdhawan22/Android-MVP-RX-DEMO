@@ -3,7 +3,7 @@ package com.application.saksham.stocktracker.app;
 import android.app.Application;
 import android.content.Context;
 
-import com.application.saksham.stocktracker.activities.utils.StringUtils;
+import com.application.saksham.stocktracker.utils.StringUtils;
 
 /**
  * Created by Saksham Dhawan on 2/16/18.
@@ -19,7 +19,7 @@ public class StockTrackerApp extends Application {
         StockTrackerApp.context = getApplicationContext();
     }
 
-    public Context getContext(){
+    public static Context getContext(){
         return context;
     }
 }
