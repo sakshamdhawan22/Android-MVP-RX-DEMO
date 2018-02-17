@@ -20,6 +20,7 @@
 
 
     <Button
+        android:id="@+id/button_stock_selection"
         android:textColor="@android:color/white"
         android:layout_below="@id/input_layout_stock"
         android:foreground="?attr/selectableItemBackground"

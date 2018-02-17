@@ -1,4 +1,4 @@
-package com.application.saksham.stocktracker;
+package com.application.saksham.stocktracker.fragments;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -8,14 +8,25 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import com.application.saksham.stocktracker.R;
+import com.application.saksham.stocktracker.app.StockTrackerApp;
+import com.application.saksham.stocktracker.communication.EventBus;
+
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by Saksham Dhawan on 2/17/18.
  */
 
 public class StockSelectorFragment extends BottomSheetDialogFragment {
+
+    @BindView(R.id.input_stock)
+    EditText stockEditText;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,4 +68,20 @@ public class StockSelectorFragment extends BottomSheetDialogFragment {
         }
     };
 
+    @OnClick(R.id.button_stock_selection)
+    void click() {
+        if(stockEditText.getText().length()==0){
+            Toast.makeText(StockTrackerApp.getContext(), R.string.enter_stock_error,Toast.LENGTH_SHORT).show();
+            return;
+        }
+        dismiss();
+        EventBus.getInstance().send(new StockSymbolWrapper(stockEditText.getText().toString()));
+    }
+
+    public class StockSymbolWrapper {
+        public String stockName;
+        public StockSymbolWrapper(String stockName) {
+            this.stockName = stockName;
+        }
+    }
 }

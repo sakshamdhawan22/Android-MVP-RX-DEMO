@@ -28,5 +28,4 @@ public class EventBus {
         }
         return instance;
     }
-
 }
