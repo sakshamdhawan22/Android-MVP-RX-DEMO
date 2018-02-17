@@ -7,11 +7,11 @@ package com.application.saksham.stocktracker.models;
 
 public class Stock {
     private String stockName;
-    private float currentPrice;
-    private float changeInPrice; // change from previous close price
+    private double currentPrice;
+    private double changeInPrice; // change from previous close price
     private boolean closed;
-    private float intradayLowPrice;
-    private float intradayHighPrice;
+    private double intradayLowPrice;
+    private double intradayHighPrice;
 
     public String getStockName() {
         return stockName;
@@ -21,19 +21,19 @@ public class Stock {
         this.stockName = stockName;
     }
 
-    public float getCurrentPrice() {
+    public double getCurrentPrice() {
         return currentPrice;
     }
 
-    public void setCurrentPrice(float currentPrice) {
+    public void setCurrentPrice(double currentPrice) {
         this.currentPrice = currentPrice;
     }
 
-    public float getChangeInPrice() {
+    public double getChangeInPrice() {
         return changeInPrice;
     }
 
-    public void setChangeInPrice(float changeInPrice) {
+    public void setChangeInPrice(double changeInPrice) {
         this.changeInPrice = changeInPrice;
     }
 
@@ -45,31 +45,31 @@ public class Stock {
         this.closed = closed;
     }
 
-    public float getIntradayLowPrice() {
+    public double getIntradayLowPrice() {
         return intradayLowPrice;
     }
 
-    public void setIntradayLowPrice(float intradayLowPrice) {
+    public void setIntradayLowPrice(double intradayLowPrice) {
         this.intradayLowPrice = intradayLowPrice;
     }
 
-    public float getIntradayHighPrice() {
+    public double getIntradayHighPrice() {
         return intradayHighPrice;
     }
 
-    public void setIntradayHighPrice(float intradayHighPrice) {
+    public void setIntradayHighPrice(double intradayHighPrice) {
         this.intradayHighPrice = intradayHighPrice;
     }
 
-    public float getOpeningPrice() {
+    public double getOpeningPrice() {
         return openingPrice;
     }
 
-    public void setOpeningPrice(float openingPrice) {
+    public void setOpeningPrice(double openingPrice) {
         this.openingPrice = openingPrice;
     }
 
-    private float openingPrice;
+    private double openingPrice;
 
     public String getIncreaseDecreaseText() {
         return changeInPrice > 0 ? "+" + changeInPrice : "-" + changeInPrice;

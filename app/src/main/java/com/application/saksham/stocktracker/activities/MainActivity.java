@@ -13,7 +13,9 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (savedInstanceState == null) {
+
+
+        if (findRetainedFragment(StockTrackingFragment.class.getSimpleName())==null) {
             addFragment(StockTrackingFragment.newInstance());
         }
     }

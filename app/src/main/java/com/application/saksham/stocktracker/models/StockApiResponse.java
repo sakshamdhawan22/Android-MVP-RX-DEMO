@@ -11,7 +11,22 @@ public class StockApiResponse {
     @SerializedName("Meta Data")
     @Expose
     public MetaData metaData;
-    @SerializedName("Time Series (15min)")
+    @SerializedName("Time Series (Daily)")
     @Expose
-    public HashMap<String,String> timeSeries15min;
+    public HashMap<String,StockData> timeSeries15min;
+    public MetaData getMetaData() {
+        return metaData;
+    }
+
+    public void setMetaData(MetaData metaData) {
+        this.metaData = metaData;
+    }
+
+    public HashMap<String, StockData> getTimeSeries15min() {
+        return timeSeries15min;
+    }
+
+    public void setTimeSeries15min(HashMap<String, StockData> timeSeries15min) {
+        this.timeSeries15min = timeSeries15min;
+    }
 }

@@ -29,11 +29,15 @@ public class BaseActivity extends AppCompatActivity {
                 .commitAllowingStateLoss();
     }
 
-
     // do not remove any fragment unless absolutely necessary (e.g login fragment)
     public void removeFragment(BaseFragment fragment) {
         FragmentManager fm = getSupportFragmentManager();
         fm.beginTransaction().remove(fragment).commitAllowingStateLoss();
+    }
+
+    public Fragment findRetainedFragment(String tag){
+        FragmentManager fm = getSupportFragmentManager();
+        return  fm.findFragmentByTag(tag);
     }
 
     @Override

@@ -20,7 +20,7 @@ public class SharedPreferencesHelper {
 
     public static void setLastViewedStock(String cityName) {
         SharedPreferences.Editor editor = StockTrackerApp.getContext().getSharedPreferences(GENERAL_PREFS, MODE_PRIVATE).edit();
-        editor.put (KEY_GENERAL_PREFS_LAST_STOCK, cityName);
+        editor.putString(KEY_GENERAL_PREFS_LAST_STOCK, cityName);
         editor.apply();
     }
 }

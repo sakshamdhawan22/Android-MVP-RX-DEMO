@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:padding="@dimen/default_screen_margin"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_stock"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:layout_marginBottom="@dimen/small_margin"
+            android:id="@+id/input_stock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_stock_symbol" />
+
+    </android.support.design.widget.TextInputLayout>
+
+
+    <Button
+        android:textColor="@android:color/white"
+        android:layout_below="@id/input_layout_stock"
+        android:foreground="?attr/selectableItemBackground"
+        android:background="@color/colorPrimaryDark"
+        android:text="@string/fetch_stock_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+</RelativeLayout>

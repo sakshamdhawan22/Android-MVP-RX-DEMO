@@ -1,6 +1,5 @@
 package com.application.saksham.stocktracker.fragments;
 
-import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,13 +11,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.application.saksham.stocktracker.R;
+import com.application.saksham.stocktracker.StockSelectorFragment;
+import com.application.saksham.stocktracker.repository.StockDataRepository;
+import com.application.saksham.stocktracker.repository.StockLocalDataSource;
+import com.application.saksham.stocktracker.repository.StockRemoteDataSource;
+import com.application.saksham.stocktracker.app.StockTrackerApp;
 import com.application.saksham.stocktracker.databinding.FragmentStockTrackingBinding;
+import com.application.saksham.stocktracker.models.Stock;
+import com.application.saksham.stocktracker.mvpviews.StockView;
 import com.application.saksham.stocktracker.presenters.StockPresenter;
 import com.application.saksham.stocktracker.utils.SharedPreferencesHelper;
 import com.application.saksham.stocktracker.utils.StringUtils;
-import com.application.saksham.stocktracker.app.StockTrackerApp;
-import com.application.saksham.stocktracker.models.Stock;
-import com.application.saksham.stocktracker.mvpviews.StockView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,7 +35,8 @@ import butterknife.Unbinder;
 public class StockTrackingFragment extends BaseFragment implements StockView {
 
     View mRootView;
-    String currentStock;
+    String currentStockName;
+    Stock currentStock;
 
     private Unbinder mUnbinder;
     @BindView(R.id.textview_current_stock)
@@ -56,18 +60,19 @@ public class StockTrackingFragment extends BaseFragment implements StockView {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initPresenter();
-        currentStock = SharedPreferencesHelper.getLastViewedStock();
+        currentStockName = SharedPreferencesHelper.getLastViewedStock();
+        setRetainInstance(true);
     }
 
     private void initPresenter() {
-        stockPresenter = new StockPresenter();
+        stockPresenter = new StockPresenter(StockDataRepository.getInstance(StockLocalDataSource.getInstance(),
+                StockRemoteDataSource.getInstance()));
         stockPresenter.setMvpView(this);
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         stockTrackingBinding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_stock_tracking, container, false);
-        stockTrackingBinding.setStock  (new Stock());
         mUnbinder = ButterKnife.bind(this, stockTrackingBinding.getRoot());
         return stockTrackingBinding.getRoot();
     }
@@ -75,7 +80,10 @@ public class StockTrackingFragment extends BaseFragment implements StockView {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        stockPresenter.fetchstock(currentStock,false);
+        if(currentStock==null) // retained fragment opened for first time
+            stockPresenter.fetchstock(currentStockName, false);
+        else
+            stockTrackingBinding.setStock(currentStock);
     }
 
     @Override
@@ -100,7 +108,7 @@ public class StockTrackingFragment extends BaseFragment implements StockView {
 
     @Override
     public void showError(String message) {
-        Toast.makeText(StockTrackerApp.getContext(),message,Toast.LENGTH_SHORT).show();
+        Toast.makeText(StockTrackerApp.getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -110,22 +118,32 @@ public class StockTrackingFragment extends BaseFragment implements StockView {
 
     @Override
     public void onStockFetched(Stock stock) {
-        stockTrackingBinding.setStock(stock);
+        if (stock != null) // local cache may return null;
+            stockTrackingBinding.setStock(stock);
+        currentStock = stock;
     }
 
     @Override
     public void onStockFetchFailed() {
-        Toast.makeText(StockTrackerApp.getContext(),getString(R.string.stock_name_invald),Toast.LENGTH_SHORT).show();
+        Toast.makeText(StockTrackerApp.getContext(), getString(R.string.stock_name_invald), Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.button_change)
-    void onClickChange(){
+    void onClickChange() {
         openStockSelector();
     }
 
     @OnClick(R.id.textview_current_stock)
     void openStockSelector() {
-
+        StockSelectorFragment stockSelectorFragment = StockSelectorFragment.getInstance();
+        stockSelectorFragment.setCancelable(true);
+        stockSelectorFragment.show(getActivity().getSupportFragmentManager(), stockSelectorFragment.getTag());
     }
 
+    @Override
+    public void onDestroy() {
+        mUnbinder.unbind();
+        stockPresenter.unsubscribe();
+        super.onDestroy();
+    }
 }

@@ -3,4 +3,7 @@
     <string name="showing_stock_data_for">Showing stock data for</string>
     <string name="change"><u> change </u></string>
     <string name="stock_name_invald">looks like this isn\'t a valid stock name. Please Retry.</string>
+    <string name="market_closed">(market closed)</string>
+    <string name="enter_stock_symbol">Enter stock symbol</string>
+    <string name="fetch_stock_info">fetch stock info</string>
 </resources>
