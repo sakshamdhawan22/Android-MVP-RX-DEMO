@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import rx.Observable;
+import timber.log.Timber;
 
 /**
  * Created by Saksham Dhawan on 2/16/18.
@@ -30,6 +31,7 @@ public class StockRemoteDataSource implements StockDataSource {
         return stockRemoteDataSource;
     }
 
+    private StockRemoteDataSource(){}
 
     @Override
     public Observable<Stock> getStock(String stockName) {
