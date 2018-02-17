@@ -11,6 +11,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 /**
@@ -37,7 +39,8 @@ public class StockRemoteDataSource implements StockDataSource {
     public Observable<Stock> getStock(String stockName) {
         return RetrofitService.getInstance().getStockData(RestApi.FUNCTION.TIME_SERIES_DAILY, stockName,
                 RestApi.INTERVAL.MIN_15.getValue(), RestApi.OUTPUT_SIZE.COMPACT, API_KEY)
-                .map(stockApiResponse -> getStockFromStockApiResponse(stockApiResponse));
+                .map(stockApiResponse -> getStockFromStockApiResponse(stockApiResponse))
+                .subscribeOn(Schedulers.io());
     }
 
     private Stock getStockFromStockApiResponse(StockApiResponse stockApiResponse) {

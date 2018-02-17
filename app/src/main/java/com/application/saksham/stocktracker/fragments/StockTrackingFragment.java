@@ -12,14 +12,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.application.saksham.stocktracker.R;
-import com.application.saksham.stocktracker.repository.StockDataRepository;
-import com.application.saksham.stocktracker.repository.StockLocalDataSource;
-import com.application.saksham.stocktracker.repository.StockRemoteDataSource;
 import com.application.saksham.stocktracker.app.StockTrackerApp;
 import com.application.saksham.stocktracker.databinding.FragmentStockTrackingBinding;
 import com.application.saksham.stocktracker.models.Stock;
 import com.application.saksham.stocktracker.mvpviews.StockView;
 import com.application.saksham.stocktracker.presenters.StockPresenter;
+import com.application.saksham.stocktracker.repository.StockDataRepository;
+import com.application.saksham.stocktracker.repository.StockLocalDataSource;
+import com.application.saksham.stocktracker.repository.StockRemoteDataSource;
 import com.application.saksham.stocktracker.utils.SharedPreferencesHelper;
 import com.application.saksham.stocktracker.utils.StringUtils;
 
@@ -27,7 +27,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import timber.log.Timber;
 
 /**
  * Created by Saksham Dhawan on 2/16/18.
@@ -85,10 +84,10 @@ public class StockTrackingFragment extends BaseFragment implements StockView {
         super.onViewCreated(view, savedInstanceState);
         swipeRefreshLayout.setOnRefreshListener(() -> {
             swipeRefreshLayout.setRefreshing(false);
-            stockPresenter.fetchstock(currentStockName,true);
+            stockPresenter.fetchstock(currentStockName, true);
         });
 
-        if(currentStock==null) // retained fragment opened for first time
+        if (currentStock == null) // retained fragment opened for first time
             stockPresenter.fetchstock(currentStockName, false);
         else
             stockTrackingBinding.setStock(currentStock);
@@ -127,16 +126,12 @@ public class StockTrackingFragment extends BaseFragment implements StockView {
     @Override
     public void onStockFetched(Stock stock) {
 
-        if(swipeRefreshLayout!=null)
+        if (swipeRefreshLayout != null)
             swipeRefreshLayout.setRefreshing(false);
 
         if (stock != null) {// local cache may return null;
-             stockTrackingBinding.setStock(stock);
+            stockTrackingBinding.setStock(stock);
             currentStock = stock;
-            Timber.d("non null stock");
-        }
-        else{
-            Timber.d(" null stock");
         }
     }
 
