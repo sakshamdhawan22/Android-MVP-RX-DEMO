@@ -9,7 +9,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.application.saksham.stocktracker.app.StockTrackerApp;
 import com.application.saksham.stocktracker.models.Stock;
 
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import rx.Observable;
@@ -68,8 +67,7 @@ public class StockCacheManager extends SQLiteOpenHelper {
     }
 
 
-
-    private static Void insertStock(Stock stock, SQLiteDatabase db) {
+    private static synchronized Void insertStock(Stock stock, SQLiteDatabase db) {
         final ContentValues contentValues = new ContentValues();
         contentValues.put(Columns.STOCK_NAME, stock.getStockName());
         contentValues.put(Columns.STOCK_CURRENT_PRICE, stock.getCurrentPrice());
@@ -79,7 +77,7 @@ public class StockCacheManager extends SQLiteOpenHelper {
         contentValues.put(Columns.STOCK_CLOSED, stock.isClosed());
         db.beginTransaction();
         try {
-            db.insert(Tables.CACHE_STOCK, null, contentValues);
+            db.insertWithOnConflict(Tables.CACHE_STOCK, null, contentValues, SQLiteDatabase.CONFLICT_REPLACE);
             db.setTransactionSuccessful();
             return null;
         } finally {
@@ -129,7 +127,7 @@ public class StockCacheManager extends SQLiteOpenHelper {
         public static final String STOCK_CHANGE_IN_PRICE = "change_in_price";
         public static final String STOCK_CLOSED = "closed";
         public static final String STOCK_INTRADAY_LOW_PRICE = "intraday_low_price";
-        public static final String STOCK_INTRADAY_HIGH_PRICE = "closed";
+        public static final String STOCK_INTRADAY_HIGH_PRICE = "intraday_high_price";
 
     }
 
@@ -138,8 +136,8 @@ public class StockCacheManager extends SQLiteOpenHelper {
                 Columns.STOCK_NAME + " TEXT PRIMARY KEY," +
                 Columns.STOCK_CURRENT_PRICE + " REAL, " +
                 Columns.STOCK_CHANGE_IN_PRICE + " REAL, " +
-                Columns.STOCK_CLOSED + " INT " +
-                Columns.STOCK_INTRADAY_LOW_PRICE + " REAL " +
+                Columns.STOCK_CLOSED + " INT, " +
+                Columns.STOCK_INTRADAY_LOW_PRICE + " REAL, " +
                 Columns.STOCK_INTRADAY_HIGH_PRICE + " REAL " +
                 ");";
 
