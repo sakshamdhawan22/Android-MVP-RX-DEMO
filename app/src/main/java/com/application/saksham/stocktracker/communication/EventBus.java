@@ -9,8 +9,8 @@ import rx.subjects.Subject;
  * Created by Saksham Dhawan on 2/17/18.
  */
 
-public class RxBus {
-    private static RxBus instance;
+public class EventBus {
+    private static EventBus instance;
 
     private final Subject<Object, Object> bus = new SerializedSubject<>(PublishSubject.create());
 
@@ -22,9 +22,9 @@ public class RxBus {
         return bus;
     }
 
-    public static RxBus getInstance() {
+    public static EventBus getInstance() {
         if (instance == null) {
-            instance = new RxBus();
+            instance = new EventBus();
         }
         return instance;
     }
