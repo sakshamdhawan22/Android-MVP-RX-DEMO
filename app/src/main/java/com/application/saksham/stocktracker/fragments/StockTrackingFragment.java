@@ -4,6 +4,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import timber.log.Timber;
 
 /**
  * Created by Saksham Dhawan on 2/16/18.
@@ -40,6 +42,8 @@ public class StockTrackingFragment extends BaseFragment implements StockView {
     private Unbinder mUnbinder;
     @BindView(R.id.textview_current_stock)
     TextView currentStockPriceTextView;
+    @BindView(R.id.swipe_refesh_layout)
+    SwipeRefreshLayout swipeRefreshLayout;
     FragmentStockTrackingBinding stockTrackingBinding;
 
 
@@ -79,6 +83,11 @@ public class StockTrackingFragment extends BaseFragment implements StockView {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            swipeRefreshLayout.setRefreshing(false);
+            stockPresenter.fetchstock(currentStockName,true);
+        });
+
         if(currentStock==null) // retained fragment opened for first time
             stockPresenter.fetchstock(currentStockName, false);
         else
@@ -117,9 +126,18 @@ public class StockTrackingFragment extends BaseFragment implements StockView {
 
     @Override
     public void onStockFetched(Stock stock) {
-        if (stock != null) // local cache may return null;
-            stockTrackingBinding.setStock(stock);
-        currentStock = stock;
+
+        if(swipeRefreshLayout!=null)
+            swipeRefreshLayout.setRefreshing(false);
+
+        if (stock != null) {// local cache may return null;
+             stockTrackingBinding.setStock(stock);
+            currentStock = stock;
+            Timber.d("non null stock");
+        }
+        else{
+            Timber.d(" null stock");
+        }
     }
 
     @Override
