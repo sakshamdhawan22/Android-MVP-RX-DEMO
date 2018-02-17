@@ -11,7 +11,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.application.saksham.stocktracker.R;
-import com.application.saksham.stocktracker.StockSelectorFragment;
 import com.application.saksham.stocktracker.repository.StockDataRepository;
 import com.application.saksham.stocktracker.repository.StockLocalDataSource;
 import com.application.saksham.stocktracker.repository.StockRemoteDataSource;
