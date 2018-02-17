@@ -11,7 +11,7 @@ import rx.Observable;
 public class StockDataRepository implements StockDataSource {
 
     private static StockDataRepository StockDataRepository;
-    StockDataSource mLocalStockDataSource, mRemoteStockDataSource;
+    private StockDataSource mLocalStockDataSource, mRemoteStockDataSource;
 
     private StockDataRepository(StockDataSource localStockDataSource, StockDataSource remoteStockDataSource) {
         this.mLocalStockDataSource = localStockDataSource;
@@ -27,10 +27,15 @@ public class StockDataRepository implements StockDataSource {
 
     @Override
     public Observable<Stock> getStock(String stockName) {
-        return mLocalStockDataSource.getStock(stockName)
-                .first()
-                .concatWith(mRemoteStockDataSource.getStock(stockName))
-                .doOnNext(stock -> mLocalStockDataSource.writeStockData(stock));
+        return Observable.concat(mLocalStockDataSource.getStock(stockName),
+                mRemoteStockDataSource.getStock(stockName)
+                        .doOnNext(stock -> {
+                            if (stock != null)
+                                writeStockData(stock)
+                                        .subscribe(aVoid -> {
+                                        }, throwable -> throwable.printStackTrace());
+                        })
+        );
     }
 
     @Override
