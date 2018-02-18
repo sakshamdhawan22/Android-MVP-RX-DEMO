@@ -9,11 +9,12 @@ import com.application.saksham.stocktracker.utils.NetworkUtils;
 import com.application.saksham.stocktracker.utils.StringUtils;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
 
 /**
  * Created by Saksham Dhawan on 2/16/18.
@@ -36,22 +37,28 @@ public class StockPresenter implements BasePresenter {
         this.stockView = (StockView) baseView;
     }
 
-    public void fetchstock(String stockName, boolean inBackground) {
+    public void fetchstock(String stockName, boolean inBackground, boolean forceRefresh) {
         if (fetchSubsciption != null) {
             compositeSubscription.remove(fetchSubsciption);
         }
-        if (!inBackground)
+        if (!inBackground && stockView != null)
             stockView.showLoading();
 
-        fetchSubsciption = stockDataRepository.getStock(stockName)
+        fetchSubsciption = Observable.interval(15, TimeUnit.SECONDS)
+                .startWith(0l)
+                .flatMap(aLong -> stockDataRepository.getStock(stockName, forceRefresh) )
                 .observeOn(AndroidSchedulers.mainThread(), true)
                 .subscribe(stock -> {
-                    stockView.onStockFetched(stock);
+                    if (stockView != null)
+                        stockView.onStockFetched(stock);
                 }, e -> {
-                    if (e instanceof IOException && !NetworkUtils.isInternetOn(StockTrackerApp.getContext())) {
-                        stockView.showError(StringUtils.getString(R.string.no_internet));
-                    } else
-                        stockView.showError(StringUtils.getString(R.string.something_went_wrong));
+                    e.printStackTrace();
+                    if (stockView != null) {
+                        if (e instanceof IOException && !NetworkUtils.isInternetOn(StockTrackerApp.getContext())) {
+                            stockView.showError(StringUtils.getString(R.string.no_internet));
+                        } else
+                            stockView.showError(StringUtils.getString(R.string.something_went_wrong));
+                    }
                 });
         compositeSubscription.add(fetchSubsciption);
     }
@@ -78,7 +85,6 @@ public class StockPresenter implements BasePresenter {
 
     @Override
     public void unsubscribe() {
-        Timber.d("unsubscribing");
         compositeSubscription.clear();
     }
 

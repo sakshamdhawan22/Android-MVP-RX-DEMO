@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.v7.app.WindowDecorActionBar;
 
 import com.application.saksham.stocktracker.app.StockTrackerApp;
 import com.application.saksham.stocktracker.models.Stock;
@@ -13,6 +14,7 @@ import java.util.concurrent.Callable;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 /**
  * Created by Saksham Dhawan on 2/16/18.
@@ -69,12 +71,13 @@ public class StockCacheManager extends SQLiteOpenHelper {
 
     private static synchronized Void insertStock(Stock stock, SQLiteDatabase db) {
         final ContentValues contentValues = new ContentValues();
-        contentValues.put(Columns.STOCK_NAME, stock.getStockName());
+        contentValues.put(Columns.STOCK_NAME, stock.getStockName().toLowerCase());
         contentValues.put(Columns.STOCK_CURRENT_PRICE, stock.getCurrentPrice());
         contentValues.put(Columns.STOCK_CHANGE_IN_PRICE, stock.getChangeInPrice());
         contentValues.put(Columns.STOCK_INTRADAY_LOW_PRICE, stock.getIntradayLowPrice());
         contentValues.put(Columns.STOCK_INTRADAY_HIGH_PRICE, stock.getIntradayHighPrice());
         contentValues.put(Columns.STOCK_CLOSED, stock.isClosed());
+        contentValues.put(Columns.STOCK_OPEN_PRICE,stock.getOpeningPrice());
         db.beginTransaction();
         try {
             db.insertWithOnConflict(Tables.CACHE_STOCK, null, contentValues, SQLiteDatabase.CONFLICT_REPLACE);
@@ -87,13 +90,16 @@ public class StockCacheManager extends SQLiteOpenHelper {
 
 
     public static Stock getStock(String stockName, SQLiteDatabase db) {
-        String s = "SELECT * FROM " + Tables.CACHE_STOCK + " where " + Columns.STOCK_NAME + " = '" + stockName + "'";
+        String s = "SELECT * FROM " + Tables.CACHE_STOCK + " where " + Columns.STOCK_NAME + " = '" + stockName.toLowerCase() + "'";
         Cursor c = db.rawQuery(s, null);
         try {
-            if (!c.moveToFirst())
+            if (!c.moveToFirst()) {
+                Timber.d("stock "+ stockName + "not found in cache");
                 return null;
+            }
             Stock stock = getStockFromCursor(c);
             c.close();
+            Timber.d("stock "+stockName + " found in cache");
             return stock;
         } finally {
             c.close();
@@ -108,12 +114,15 @@ public class StockCacheManager extends SQLiteOpenHelper {
         double intradayLowPrice = c.getDouble(c.getColumnIndex(Columns.STOCK_INTRADAY_LOW_PRICE));
         double changeInPrice = c.getDouble(c.getColumnIndex(Columns.STOCK_CHANGE_IN_PRICE));
         boolean closed = c.getInt(c.getColumnIndex(Columns.STOCK_CLOSED)) == 1 ? true : false;
+        double openPrice = c.getDouble(c.getColumnIndex(Columns.STOCK_OPEN_PRICE));
         stock.setStockName(stockName);
         stock.setCurrentPrice(stockPrice);
         stock.setIntradayHighPrice(intradayHighPrice);
         stock.setIntradayLowPrice(intradayLowPrice);
         stock.setChangeInPrice(changeInPrice);
         stock.setClosed(closed);
+        stock.setValidStock(true); // if it wasn't valid, it would not have made it to the db
+        stock.setOpeningPrice(openPrice);
         return stock;
     }
 
@@ -128,12 +137,13 @@ public class StockCacheManager extends SQLiteOpenHelper {
         public static final String STOCK_CLOSED = "closed";
         public static final String STOCK_INTRADAY_LOW_PRICE = "intraday_low_price";
         public static final String STOCK_INTRADAY_HIGH_PRICE = "intraday_high_price";
-
+        public static final String STOCK_OPEN_PRICE = "open_price";
     }
 
     public static class Create {
         private static final String CREATE_CACHE_TABLE = "CREATE TABLE " + Tables.CACHE_STOCK + " (" +
                 Columns.STOCK_NAME + " TEXT PRIMARY KEY," +
+                Columns.STOCK_OPEN_PRICE + " REAL, " +
                 Columns.STOCK_CURRENT_PRICE + " REAL, " +
                 Columns.STOCK_CHANGE_IN_PRICE + " REAL, " +
                 Columns.STOCK_CLOSED + " INT, " +

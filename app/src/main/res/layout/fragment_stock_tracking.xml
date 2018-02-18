@@ -1,4 +1,5 @@
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/tools">
 
     <data>
 
@@ -8,123 +9,231 @@
             name="stock"
             type="com.application.saksham.stocktracker.models.Stock" />
 
+        <variable
+            name="showRetry"
+            type="boolean" />
+
+        <variable
+            name="retryMessage"
+            type="String" />
+
     </data>
 
-    <RelativeLayout
-        android:padding="@dimen/default_screen_margin"
-        android:background="@color/view_background"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refesh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/swipe_refesh_layout"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            card_view:cardCornerRadius="4dp">
-
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="@dimen/small_margin"
-                android:padding="@dimen/default_screen_margin">
+                android:layout_marginBottom="@dimen/small_margin"
+                android:background="@color/view_background"
+                android:padding="@dimen/small_margin">
 
-                <TextView
-                    android:id="@+id/textview_showing"
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:text="@string/showing_stock_data_for"
-                    android:textSize="@dimen/medium_text_size" />
+                    android:visibility="@{stock==null?View.INVISIBLE:View.VISIBLE}">
+
+                    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/basic_info_card"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/small_margin"
+                        android:elevation="4dp"
+                        card_view:cardCornerRadius="4dp">
 
 
-                <TextView
-                    android:id="@+id/textview_current_stock"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/textview_showing"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginLeft="@dimen/default_screen_margin"
-                    android:layout_marginRight="@dimen/default_screen_margin"
-                    android:text="@{stock.stockName}"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/large_text_size" />
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/small_margin"
+                            android:padding="4dp">
+
+                            <TextView
+                                android:id="@+id/textview_showing"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:text="@string/showing_stock_data_for"
+                                android:textSize="@dimen/medium_text_size" />
 
 
-                <TextView
-                    android:id="@+id/button_change"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/textview_current_stock"
-                    android:layout_centerHorizontal="true"
-                    android:paddingLeft="@dimen/default_screen_margin"
-                    android:paddingRight="@dimen/default_screen_margin"
-                    android:text="@string/change"
-                    android:textColor="@android:color/holo_blue_light"
-                    android:textSize="@dimen/tiny_text_size"
-                    android:textStyle="" />
-
-                <TextView
-                    android:id="@+id/textview_current_stock_price"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/button_change"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginRight="@dimen/small_margin"
-                    android:text="@{``+stock.currentPrice}"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/large_text_size" />
+                            <TextView
+                                android:id="@+id/textview_current_stock"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/textview_showing"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginLeft="@dimen/default_screen_margin"
+                                android:layout_marginRight="@dimen/default_screen_margin"
+                                android:includeFontPadding="false"
+                                android:lineSpacingExtra="0dp"
+                                android:text="@{stock.stockName}"
+                                android:textAllCaps="true"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="@dimen/large_text_size" />
 
 
-                <TextView
-                    android:id="@+id/textview_current_stock_increase_decrease"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBottom="@id/textview_current_stock_price"
-                    android:layout_alignTop="@id/textview_current_stock_price"
-                    android:layout_toRightOf="@id/textview_current_stock_price"
-                    android:gravity="center"
-                    android:text="@{``+stock.getIncreaseDecreaseText}"
-                    android:textColor="@android:color/holo_orange_dark"
-                    android:textSize="@dimen/tiny_text_size"
-                    android:textStyle=""
-                    android:visibility="@{stock.changeInPrice ==0?View.INVISIBLE:View.VISIBLE}" />
+                            <TextView
+                                android:id="@+id/button_change"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/textview_current_stock"
+                                android:layout_centerHorizontal="true"
+                                android:layout_margin="-4dp"
+                                android:includeFontPadding="false"
+                                android:lineSpacingExtra="0dp"
+                                android:paddingLeft="@dimen/default_screen_margin"
+                                android:paddingRight="@dimen/default_screen_margin"
+                                android:text="@string/change"
+                                android:textColor="@android:color/holo_blue_light"
+                                android:textSize="@dimen/tiny_text_size"
+                                android:textStyle="" />
+
+                            <TextView
+                                android:id="@+id/textview_current_stock_price"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/button_change"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginRight="@dimen/small_margin"
+                                android:text="@{``+stock.currentPrice}"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="@dimen/large_text_size" />
 
 
-                <TextView
-                    android:id="@+id/textview_closed"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/textview_current_stock_price"
-                    android:layout_centerHorizontal="true"
-                    android:text="@string/market_closed"
-                    android:textSize="@dimen/tiny_text_size"
-                    android:visibility="@{stock.closed?View.VISIBLE:View.GONE}"
+                            <TextView
+                                android:id="@+id/textview_current_stock_increase_decrease"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignBottom="@id/textview_current_stock_price"
+                                android:layout_alignTop="@id/textview_current_stock_price"
+                                android:layout_toRightOf="@id/textview_current_stock_price"
+                                android:gravity="center"
+                                android:text="@{``+stock.getIncreaseDecreaseText}"
+                                android:textColor="@android:color/holo_orange_dark"
+                                android:textSize="@dimen/tiny_text_size"
+                                android:textStyle=""
+                                android:visibility="@{stock.changeInPrice ==0?View.INVISIBLE:View.VISIBLE}" />
 
-                    />
+
+                            <TextView
+                                android:id="@+id/textview_closed"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/textview_current_stock_price"
+                                android:layout_centerHorizontal="true"
+                                android:text="@string/market_closed"
+                                android:textSize="@dimen/tiny_text_size"
+                                android:visibility="@{stock.closed?View.VISIBLE:View.GONE}"
+
+                                />
+                        </RelativeLayout>
+                    </android.support.v7.widget.CardView>
+
+
+                    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/open_low_high_price"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/basic_info_card"
+                        android:elevation="4dp"
+                        card_view:cardCornerRadius="4dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <include
+                                android:id="@+id/open_section"
+                                layout="@layout/simple_section_with_header_and_value"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                app:heading="@{@string/open_price}"
+                                app:value="@{stock.openingPrice}"></include>
+
+                            <include
+                                android:id="@+id/low_section"
+                                layout="@layout/simple_section_with_header_and_value"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                app:heading="@{@string/low_price}"
+                                app:value="@{stock.intradayLowPrice}"></include>
+
+                            <include
+                                android:id="@+id/high_section"
+                                layout="@layout/simple_section_with_header_and_value"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                app:heading="@{@string/high_price}"
+                                app:value="@{stock.intradayHighPrice}"></include>
+
+
+                        </LinearLayout>
+
+                    </android.support.v7.widget.CardView>
+
+
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:layout_marginTop="12dp"
+                        android:visibility="gone"
+                        android:layout_below="@id/open_low_high_price"
+                        android:id="@+id/line_chart"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/loading_spinner_wrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/white"
+                    android:visibility="@{stock==null &amp;&amp; !showRetry ?View.VISIBLE:View.INVISIBLE}">
+
+                    <ProgressBar
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:indeterminateTint="@color/colorPrimary"
+                        android:indeterminateTintMode="src_atop"
+                        android:progressTint="@color/colorPrimaryDark"
+                        android:visibility="visible" />
+
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/no_content_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/white"
+                    android:visibility="@{showRetry?View.VISIBLE:View.INVISIBLE}">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="@{retryMessage}" />
+
+                </RelativeLayout>
+
+
             </RelativeLayout>
-        </android.support.v7.widget.CardView>
-
-
-        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            card_view:cardCornerRadius="4dp">
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-
-            </LinearLayout>
-
-        </android.support.v7.widget.CardView>
-        </android.support.v4.widget.SwipeRefreshLayout>
-    </RelativeLayout>
+        </ScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </layout>

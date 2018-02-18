@@ -5,15 +5,15 @@ import com.application.saksham.stocktracker.models.StockApiResponse;
 import com.application.saksham.stocktracker.network.RestApi;
 import com.application.saksham.stocktracker.network.RetrofitService;
 import com.application.saksham.stocktracker.utils.DateUtils;
+import com.github.mikephil.charting.charts.LineChart;
 
 import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 /**
  * Created by Saksham Dhawan on 2/16/18.
@@ -33,18 +33,25 @@ public class StockRemoteDataSource implements StockDataSource {
         return stockRemoteDataSource;
     }
 
-    private StockRemoteDataSource(){}
+    private StockRemoteDataSource() {
+    }
 
     @Override
-    public Observable<Stock> getStock(String stockName) {
+    public Observable<Stock> getStock(String stockName, boolean forceRefresh) {
         return RetrofitService.getInstance().getStockData(RestApi.FUNCTION.TIME_SERIES_DAILY, stockName,
-                RestApi.INTERVAL.MIN_15.getValue(), RestApi.OUTPUT_SIZE.COMPACT, API_KEY)
-                .map(stockApiResponse -> getStockFromStockApiResponse(stockApiResponse))
-                .subscribeOn(Schedulers.io());
+                null, null, API_KEY)
+                .subscribeOn(Schedulers.io())
+                .map(stockApiResponse -> getStockFromStockApiResponse(stockApiResponse));
     }
 
     private Stock getStockFromStockApiResponse(StockApiResponse stockApiResponse) {
         Stock stock = new Stock();
+        if (stockApiResponse.getErrorMessage() != null) {
+            stock.setValidStock(false);
+            return stock;
+        }
+        stock.setValidStock(true);
+
         DecimalFormat df = new DecimalFormat("#.##");
 
         stock.setCurrentPrice(Double.valueOf(df.format(stockApiResponse.getTimeSeries15min().get(stockApiResponse.getMetaData()._3LastRefreshed).getClose())));
@@ -54,6 +61,13 @@ public class StockRemoteDataSource implements StockDataSource {
         stock.setIntradayLowPrice(Double.valueOf(df.format((stockApiResponse.getTimeSeries15min().get(stockApiResponse.getMetaData()._3LastRefreshed).getLow()))));
         stock.setIntradayHighPrice(Double.valueOf(df.format(stockApiResponse.getTimeSeries15min().get(stockApiResponse.getMetaData()._3LastRefreshed).getHigh())));
         stock.setStockName(stockApiResponse.getMetaData()._2Symbol);
+        stock.setLastUpdatedDate(stockApiResponse.getMetaData()._3LastRefreshed);
+
+        HashMap<String,Double> stockDatePriceMap = new HashMap<>();
+        for(String key: stockApiResponse.getTimeSeries15min().keySet())
+            stockDatePriceMap.put(key,stockApiResponse.getTimeSeries15min().get(key).getClose());
+        stock.setHistoricalData(stockDatePriceMap);
+
         return stock;
     }
 
@@ -76,7 +90,9 @@ public class StockRemoteDataSource implements StockDataSource {
     }
 
     private boolean isMarkedOpen() {
-        int currentHour = DateUtils.getCurrentTimeInUs().get(Calendar.HOUR_OF_DAY);
-        return currentHour >= 9 && currentHour <= 16;
+        Calendar dateInUs = DateUtils.getCurrentTimeInUs();
+        int currentHour = dateInUs.get(Calendar.HOUR_OF_DAY);
+        int currentDayOfWeek = dateInUs.get(Calendar.DAY_OF_WEEK);
+        return currentDayOfWeek >= Calendar.MONDAY && currentDayOfWeek <= Calendar.FRIDAY && currentHour >= 9 && currentHour <= 16;
     }
 }

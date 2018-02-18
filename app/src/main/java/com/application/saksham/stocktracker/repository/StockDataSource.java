@@ -11,7 +11,7 @@ import rx.Observable;
 
 public interface StockDataSource {
 
-    Observable<Stock> getStock(String stockName);
+    Observable<Stock> getStock(String stockName, boolean forceRefresh);
     Observable<Boolean> isValidStockName(String stockName);
     Observable<Void> writeStockData(Stock stock);
 }

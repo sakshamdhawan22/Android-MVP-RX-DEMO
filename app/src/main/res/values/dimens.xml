@@ -2,6 +2,7 @@
 <resources>
     <dimen name="default_screen_margin">16dp</dimen>
     <dimen name="small_margin">8dp</dimen>
+    <dimen name="tiny_margin">4dp</dimen>
     <dimen name="medium_text_size">20sp</dimen>
     <dimen name="large_text_size">40sp</dimen>
     <dimen name="tiny_text_size">15sp</dimen>

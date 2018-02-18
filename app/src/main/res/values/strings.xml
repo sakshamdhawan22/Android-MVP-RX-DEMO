@@ -9,4 +9,12 @@
     <string name="enter_stock_error">Please enter a stock symbol</string>
     <string name="no_internet">Looks like there\'s no internet. Please try again in a while by pulling down to refresh.</string>
     <string name="something_went_wrong">something went wrong.</string>
+    <string name="low_price">today\'s low</string>
+    <string name="high_price">today\'s high</string>
+    <string name="open_price">open price</string>
+    <string name="something_went_wrong_please_pull_down_to_refresh_to_retry">Something went wrong. Please pull down to refresh to retry.</string>
+    <string name="stock_price">Stock price</string>
+    <string name="stock_history">Stock price history</string>
+    <string name="go">Go</string>
+    <string name="invalid_stock">That doesn\'t seem to be a valid stock symbol. Please retry.</string>
 </resources>

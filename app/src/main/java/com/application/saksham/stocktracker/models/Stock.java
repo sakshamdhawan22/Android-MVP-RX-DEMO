@@ -1,17 +1,22 @@
 package com.application.saksham.stocktracker.models;
 
 
+import java.util.HashMap;
+
 /**
  * Created by Saksham Dhawan on 2/16/18.
  */
 
 public class Stock {
+    private boolean validStock;
     private String stockName;
     private double currentPrice;
     private double changeInPrice; // change from previous close price
     private boolean closed;
     private double intradayLowPrice;
     private double intradayHighPrice;
+    private String lastUpdatedDate;
+    private HashMap<String,Double> historicalData; // date->stock price map
 
     public String getStockName() {
         return stockName;
@@ -73,5 +78,29 @@ public class Stock {
 
     public String getIncreaseDecreaseText() {
         return changeInPrice > 0 ? "+" + changeInPrice : "-" + changeInPrice;
+    }
+
+    public boolean isValidStock() {
+        return validStock;
+    }
+
+    public void setValidStock(boolean validStock) {
+        this.validStock = validStock;
+    }
+
+    public HashMap<String, Double> getHistoricalData() {
+        return historicalData;
+    }
+
+    public void setHistoricalData(HashMap<String, Double> historicalData) {
+        this.historicalData = historicalData;
+    }
+
+    public String getLastUpdatedDate() {
+        return lastUpdatedDate;
+    }
+
+    public void setLastUpdatedDate(String lastUpdatedDate) {
+        this.lastUpdatedDate = lastUpdatedDate;
     }
 }

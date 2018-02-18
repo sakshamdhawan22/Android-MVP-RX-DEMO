@@ -4,7 +4,6 @@ import com.application.saksham.stocktracker.models.Stock;
 import com.application.saksham.stocktracker.storage.StockCacheManager;
 
 import rx.Observable;
-import timber.log.Timber;
 
 /**
  * Created by Saksham Dhawan on 2/16/18.
@@ -24,7 +23,7 @@ public class StockLocalDataSource implements StockDataSource {
     private StockLocalDataSource(){}
 
     @Override
-    public Observable<Stock> getStock(String stockName) {
+    public Observable<Stock> getStock(String stockName, boolean forceRefresh) {
         return StockCacheManager.getStock(stockName);
     }
 

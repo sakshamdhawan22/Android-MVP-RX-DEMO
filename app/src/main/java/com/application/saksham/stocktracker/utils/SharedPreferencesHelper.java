@@ -18,9 +18,9 @@ public class SharedPreferencesHelper {
         return prefs.getString(KEY_GENERAL_PREFS_LAST_STOCK, "GOOG");
     }
 
-    public static void setLastViewedStock(String cityName) {
+    public static void setLastViewedStock(String stockName) {
         SharedPreferences.Editor editor = StockTrackerApp.getContext().getSharedPreferences(GENERAL_PREFS, MODE_PRIVATE).edit();
-        editor.putString(KEY_GENERAL_PREFS_LAST_STOCK, cityName);
+        editor.putString(KEY_GENERAL_PREFS_LAST_STOCK, stockName);
         editor.apply();
     }
 }

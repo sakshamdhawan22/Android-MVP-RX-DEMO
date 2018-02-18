@@ -14,6 +14,10 @@ public class StockApiResponse {
     @SerializedName("Time Series (Daily)")
     @Expose
     public HashMap<String,StockData> timeSeries15min;
+    @Expose
+    @SerializedName("Error Message")
+    String errorMessage;
+
     public MetaData getMetaData() {
         return metaData;
     }
@@ -28,5 +32,13 @@ public class StockApiResponse {
 
     public void setTimeSeries15min(HashMap<String, StockData> timeSeries15min) {
         this.timeSeries15min = timeSeries15min;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 }

@@ -26,16 +26,21 @@ public class StockDataRepository implements StockDataSource {
     }
 
     @Override
-    public Observable<Stock> getStock(String stockName) {
-        return Observable.concat(mLocalStockDataSource.getStock(stockName),
-                mRemoteStockDataSource.getStock(stockName)
-                        .doOnNext(stock -> {
-                            if (stock != null)
-                                writeStockData(stock)
-                                        .subscribe(aVoid -> {
-                                        }, throwable -> throwable.printStackTrace());
-                        })
-        );
+    public Observable<Stock> getStock(String stockName, boolean forceRefresh) {
+        if (forceRefresh)
+            return mRemoteStockDataSource.getStock(stockName, forceRefresh)
+                    .doOnNext(stock -> cacheStock(stock));
+        return Observable.concat(mLocalStockDataSource.getStock(stockName, forceRefresh),
+                mRemoteStockDataSource.getStock(stockName, forceRefresh))
+                .doOnNext(stock -> cacheStock(stock));
+
+    }
+
+    private void cacheStock(Stock stock) {
+        if (stock != null)
+            writeStockData(stock)
+                    .subscribe(aVoid -> {
+                    }, throwable -> throwable.printStackTrace());
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.application.saksham.stocktracker.activities;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -7,6 +8,14 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.application.saksham.stocktracker.R;
 import com.application.saksham.stocktracker.fragments.BaseFragment;
+import com.application.saksham.stocktracker.services.StockSyncService;
+import com.firebase.jobdispatcher.Constraint;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.RetryStrategy;
+import com.firebase.jobdispatcher.Trigger;
 
 /**
  * Created by Saksham Dhawan on 2/16/18.
@@ -54,6 +63,27 @@ public class BaseActivity extends AppCompatActivity {
 
     private BaseFragment getFragment() {
         return (BaseFragment) getSupportFragmentManager().findFragmentById(R.id.container);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        scheduleStockSyncService(this,60*60,60*60*2);
+    }
+
+    public static void scheduleStockSyncService(Context context, int windowStart, int windowEnd) {
+        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
+        Job job = dispatcher.newJobBuilder()
+                .setService(StockSyncService.class)
+                .setTag(StockSyncService.JOB_TAG)
+                .setRecurring(true)
+                .setLifetime(Lifetime.FOREVER)
+                .setTrigger(Trigger.executionWindow(windowStart,windowEnd))
+                .setReplaceCurrent(true)
+                .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
+                .setConstraints(Constraint.ON_ANY_NETWORK)
+                .build();
+        dispatcher.mustSchedule(job);
     }
 }
 
