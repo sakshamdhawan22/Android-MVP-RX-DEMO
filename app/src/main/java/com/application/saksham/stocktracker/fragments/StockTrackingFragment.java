@@ -215,7 +215,6 @@ public class StockTrackingFragment extends BaseFragment implements StockView {
 
     private void drawGraph(Stock stock) {
         if (stock.getHistoricalData() == null || stock.getHistoricalData().size() == 0 || lineChart == null) {
-            // we don't cache graph data
             return;
         }
         lineChart.setVisibility(View.VISIBLE);

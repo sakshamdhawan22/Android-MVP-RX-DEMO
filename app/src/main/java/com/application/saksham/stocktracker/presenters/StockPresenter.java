@@ -2,6 +2,7 @@ package com.application.saksham.stocktracker.presenters;
 
 import com.application.saksham.stocktracker.R;
 import com.application.saksham.stocktracker.app.StockTrackerApp;
+import com.application.saksham.stocktracker.models.Stock;
 import com.application.saksham.stocktracker.mvpviews.BaseView;
 import com.application.saksham.stocktracker.mvpviews.StockView;
 import com.application.saksham.stocktracker.repository.StockDataRepository;
@@ -46,11 +47,15 @@ public class StockPresenter implements BasePresenter {
 
         fetchSubsciption = Observable.interval(15, TimeUnit.SECONDS)
                 .startWith(0l)
-                .flatMap(aLong -> stockDataRepository.getStock(stockName, forceRefresh) )
+                .flatMap(aLong -> stockDataRepository.getStock(stockName, forceRefresh))
                 .observeOn(AndroidSchedulers.mainThread(), true)
                 .subscribe(stock -> {
                     if (stockView != null) {
                         stockView.onStockFetched(stock);
+                        if (stock != null) {
+                            if (stock.getSource().equals(Stock.Source.REMOTE) && stock.isClosed())
+                                fetchSubsciption.unsubscribe();
+                        }
                     }
                 }, e -> {
                     e.printStackTrace();

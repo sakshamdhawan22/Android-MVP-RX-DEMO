@@ -179,6 +179,7 @@ public class StockCacheManager extends SQLiteOpenHelper {
         stock.setOpeningPrice(openPrice);
         stock.setLastUpdatedDate(lastUpdated);
         stock.setTimeStamp(fetchTime);
+        stock.setSource(Stock.Source.LOCAL);
         return stock;
     }
 

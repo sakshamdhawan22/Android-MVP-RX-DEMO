@@ -21,6 +21,7 @@ public class Stock {
     private String lastUpdatedDate;
     private HashMap<String, Double> historicalData; // date->stock price map
     private long timeStamp;
+    Source source;
 
     public String getStockName() {
         return stockName;
@@ -129,5 +130,17 @@ public class Stock {
             else
                 return StockTrackerApp.getContext().getString(R.string.updated_minutes_ago, secDiff / 60);
         }
+    }
+
+    public Source getSource() {
+        return source;
+    }
+
+    public void setSource(Source source) {
+        this.source = source;
+    }
+
+    public enum Source{
+        LOCAL,REMOTE
     }
 }

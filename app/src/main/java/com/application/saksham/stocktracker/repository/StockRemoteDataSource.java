@@ -65,6 +65,7 @@ public class StockRemoteDataSource implements StockDataSource {
         stock.setStockName(stockApiResponse.getMetaData()._2Symbol);
         stock.setLastUpdatedDate(stockApiResponse.getMetaData()._3LastRefreshed);
         stock.setTimeStamp(System.currentTimeMillis());
+        stock.setSource(Stock.Source.REMOTE);
 
         HashMap<String,Double> stockDatePriceMap = new HashMap<>();
         for(String key: stockApiResponse.getTimeSeries15min().keySet())
