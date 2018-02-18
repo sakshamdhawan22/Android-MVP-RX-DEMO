@@ -17,16 +17,12 @@ import com.firebase.jobdispatcher.Trigger;
 
 public class FirebaseHelper {
 
-    public static void scheduleStockSyncService(boolean recurring, Context context, int windowStart, int windowEnd) {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean("recurring", recurring);
-
+    public static void scheduleStockSyncService(Context context, int windowStart, int windowEnd) {
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
         Job job = dispatcher.newJobBuilder()
-                .setExtras(bundle)
                 .setService(StockSyncService.class)
                 .setTag(StockSyncService.JOB_TAG)
-                .setRecurring(recurring)
+                .setRecurring(true)
                 .setLifetime(Lifetime.FOREVER)
                 .setTrigger(Trigger.executionWindow(windowStart, windowEnd))
                 .setReplaceCurrent(true)

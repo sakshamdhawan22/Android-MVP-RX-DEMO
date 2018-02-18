@@ -64,6 +64,7 @@ public class StockRemoteDataSource implements StockDataSource {
         stock.setIntradayHighPrice(Double.valueOf(df.format(stockApiResponse.getTimeSeries15min().get(stockApiResponse.getMetaData()._3LastRefreshed).getHigh())));
         stock.setStockName(stockApiResponse.getMetaData()._2Symbol);
         stock.setLastUpdatedDate(stockApiResponse.getMetaData()._3LastRefreshed);
+        stock.setTimeStamp(System.currentTimeMillis());
 
         HashMap<String,Double> stockDatePriceMap = new HashMap<>();
         for(String key: stockApiResponse.getTimeSeries15min().keySet())

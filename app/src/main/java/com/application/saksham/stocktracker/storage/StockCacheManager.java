@@ -89,6 +89,7 @@ public class StockCacheManager extends SQLiteOpenHelper {
         contentValues.put(StockColumns.STOCK_CLOSED, stock.isClosed());
         contentValues.put(StockColumns.STOCK_OPEN_PRICE, stock.getOpeningPrice());
         contentValues.put(StockColumns.STOCK_LAST_UPDATED, stock.getLastUpdatedDate());
+        contentValues.put(StockColumns.STOCK_FETCH_TIME, stock.getTimeStamp());
         db.beginTransaction();
         try {
             db.insertWithOnConflict(Tables.CACHE_STOCK, null, contentValues, SQLiteDatabase.CONFLICT_REPLACE);
@@ -167,6 +168,7 @@ public class StockCacheManager extends SQLiteOpenHelper {
         boolean closed = c.getInt(c.getColumnIndex(StockColumns.STOCK_CLOSED)) == 1;
         double openPrice = c.getDouble(c.getColumnIndex(StockColumns.STOCK_OPEN_PRICE));
         String lastUpdated = c.getString(c.getColumnIndex(StockColumns.STOCK_LAST_UPDATED));
+        long fetchTime = c.getLong(c.getColumnIndex(StockColumns.STOCK_FETCH_TIME));
         stock.setStockName(stockName);
         stock.setCurrentPrice(stockPrice);
         stock.setIntradayHighPrice(intradayHighPrice);
@@ -176,6 +178,7 @@ public class StockCacheManager extends SQLiteOpenHelper {
         stock.setValidStock(true); // if it wasn't valid, it would not have made it to the db
         stock.setOpeningPrice(openPrice);
         stock.setLastUpdatedDate(lastUpdated);
+        stock.setTimeStamp(fetchTime);
         return stock;
     }
 
@@ -193,6 +196,7 @@ public class StockCacheManager extends SQLiteOpenHelper {
         public static final String STOCK_INTRADAY_HIGH_PRICE = "intraday_high_price";
         public static final String STOCK_OPEN_PRICE = "open_price";
         public static final String STOCK_LAST_UPDATED = "last_updated_time";
+        public static final String STOCK_FETCH_TIME = "fetch_time";
     }
 
     public static class HistoryDataColumns {
@@ -205,6 +209,7 @@ public class StockCacheManager extends SQLiteOpenHelper {
         private static final String CREATE_CACHE_TABLE = "CREATE TABLE " + Tables.CACHE_STOCK + " (" +
                 StockColumns.STOCK_NAME + " TEXT PRIMARY KEY," +
                 StockColumns.STOCK_LAST_UPDATED + " TEXT , " +
+                StockColumns.STOCK_FETCH_TIME + " REAL , " +
                 StockColumns.STOCK_OPEN_PRICE + " REAL, " +
                 StockColumns.STOCK_CURRENT_PRICE + " REAL, " +
                 StockColumns.STOCK_CHANGE_IN_PRICE + " REAL, " +

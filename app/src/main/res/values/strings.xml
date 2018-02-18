@@ -17,4 +17,8 @@
     <string name="stock_history">Stock price history</string>
     <string name="go">Go</string>
     <string name="invalid_stock">That doesn\'t seem to be a valid stock symbol. Please retry.</string>
+    <string name="updated_some_seconds_ago">updated just now</string>
+    <string name="updated_seconds_ago">updated %d seconds ago</string>
+    <string name="updated_minutes_ago">updated %d mins ago</string>
+    <string name="updated_single_minute_ago">updated a min ago</string>
 </resources>

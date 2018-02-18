@@ -39,11 +39,14 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 /**
@@ -66,8 +69,11 @@ public class StockTrackingFragment extends BaseFragment implements StockView {
     RelativeLayout ProgressBarLayout;
     @BindView(R.id.line_chart)
     LineChart lineChart;
+    @BindView(R.id.textview_closed)
+    TextView updatedAgoTextView;
 
     StockPresenter stockPresenter;
+    private Subscription timerSubsciption;
 
 
     @Override
@@ -121,6 +127,28 @@ public class StockTrackingFragment extends BaseFragment implements StockView {
                         stockPresenter.fetchstock(stockName, false, false);
                     }
                 }, throwable -> throwable.printStackTrace());
+
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        timerSubsciption = rx.Observable.interval(1, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(aLong -> {
+                    if (currentStock != null && !currentStock.isClosed()) {
+                        updatedAgoTextView.setText(currentStock.getupdatedAgoString());
+                    } else
+                        updatedAgoTextView.setText(StringUtils.getString(R.string.market_closed));
+                }, throwable -> throwable.printStackTrace());
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        timerSubsciption.unsubscribe();
     }
 
     @Override

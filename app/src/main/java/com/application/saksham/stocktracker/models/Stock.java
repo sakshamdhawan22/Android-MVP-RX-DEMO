@@ -1,6 +1,9 @@
 package com.application.saksham.stocktracker.models;
 
 
+import com.application.saksham.stocktracker.R;
+import com.application.saksham.stocktracker.app.StockTrackerApp;
+
 import java.util.HashMap;
 
 /**
@@ -16,7 +19,8 @@ public class Stock {
     private double intradayLowPrice;
     private double intradayHighPrice;
     private String lastUpdatedDate;
-    private HashMap<String,Double> historicalData; // date->stock price map
+    private HashMap<String, Double> historicalData; // date->stock price map
+    private long timeStamp;
 
     public String getStockName() {
         return stockName;
@@ -102,5 +106,28 @@ public class Stock {
 
     public void setLastUpdatedDate(String lastUpdatedDate) {
         this.lastUpdatedDate = lastUpdatedDate;
+    }
+
+    public long getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
+    public String getupdatedAgoString() {
+        int secDiff = (int) (System.currentTimeMillis() - timeStamp) / 1000;
+        if (secDiff <= 60) {
+            if (secDiff <= 5)
+                return StockTrackerApp.getContext().getString(R.string.updated_some_seconds_ago);
+            else
+                return StockTrackerApp.getContext().getString(R.string.updated_seconds_ago, secDiff);
+        } else {
+            if (secDiff / 60 == 1)
+                return StockTrackerApp.getContext().getString(R.string.updated_single_minute_ago);
+            else
+                return StockTrackerApp.getContext().getString(R.string.updated_minutes_ago, secDiff / 60);
+        }
     }
 }

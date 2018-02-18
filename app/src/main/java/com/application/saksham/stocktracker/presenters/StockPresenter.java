@@ -49,8 +49,9 @@ public class StockPresenter implements BasePresenter {
                 .flatMap(aLong -> stockDataRepository.getStock(stockName, forceRefresh) )
                 .observeOn(AndroidSchedulers.mainThread(), true)
                 .subscribe(stock -> {
-                    if (stockView != null)
+                    if (stockView != null) {
                         stockView.onStockFetched(stock);
+                    }
                 }, e -> {
                     e.printStackTrace();
                     if (stockView != null) {
