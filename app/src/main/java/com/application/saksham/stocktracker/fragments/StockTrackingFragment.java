@@ -135,6 +135,7 @@ public class StockTrackingFragment extends BaseFragment implements StockView {
     public void onResume() {
         super.onResume();
         timerSubsciption = rx.Observable.interval(1, TimeUnit.SECONDS)
+                .startWith(0l)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> {
                     if (currentStock != null && !currentStock.isClosed()) {
