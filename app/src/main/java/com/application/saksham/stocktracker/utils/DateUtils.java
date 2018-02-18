@@ -39,4 +39,10 @@ public class DateUtils {
         return cal;
     }
 
+    public static boolean isMarkedOpen() {
+        Calendar dateInUs = DateUtils.getCurrentTimeInUs();
+        int currentHour = dateInUs.get(Calendar.HOUR_OF_DAY);
+        int currentDayOfWeek = dateInUs.get(Calendar.DAY_OF_WEEK);
+        return currentDayOfWeek >= Calendar.MONDAY && currentDayOfWeek <= Calendar.FRIDAY && currentHour >= 9 && currentHour <= 16;
+    }
 }

@@ -19,6 +19,7 @@ public class StockSyncService extends SimpleJobService {
 
     public static final String JOB_TAG = StockSyncService.class.getSimpleName();
 
+
     @Override
     public int onRunJob(JobParameters job) {
         Timber.d("running job");
@@ -27,6 +28,8 @@ public class StockSyncService extends SimpleJobService {
                     StockDataRepository.getInstance(StockLocalDataSource.getInstance(), StockRemoteDataSource.getInstance()));
             stockPresenter.fetchstock(SharedPreferencesHelper.getLastViewedStock(), true, false);
             Timber.d("job success");
+
+
             return JobService.RESULT_SUCCESS;
         } catch (Exception e) {
             Timber.d("job error");

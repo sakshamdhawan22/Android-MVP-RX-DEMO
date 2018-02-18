@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.application.saksham.stocktracker.R;
 import com.application.saksham.stocktracker.fragments.BaseFragment;
+import com.application.saksham.stocktracker.services.FirebaseHelper;
 import com.application.saksham.stocktracker.services.StockSyncService;
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
@@ -68,22 +69,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        scheduleStockSyncService(this,60*60,60*60*2);
-    }
-
-    public static void scheduleStockSyncService(Context context, int windowStart, int windowEnd) {
-        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
-        Job job = dispatcher.newJobBuilder()
-                .setService(StockSyncService.class)
-                .setTag(StockSyncService.JOB_TAG)
-                .setRecurring(true)
-                .setLifetime(Lifetime.FOREVER)
-                .setTrigger(Trigger.executionWindow(windowStart,windowEnd))
-                .setReplaceCurrent(true)
-                .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
-                .setConstraints(Constraint.ON_ANY_NETWORK)
-                .build();
-        dispatcher.mustSchedule(job);
+       FirebaseHelper.scheduleStockSyncService(this,60*60,60*60*2);
     }
 }
 

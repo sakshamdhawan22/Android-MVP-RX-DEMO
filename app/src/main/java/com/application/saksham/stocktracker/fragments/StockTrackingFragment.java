@@ -118,11 +118,7 @@ public class StockTrackingFragment extends BaseFragment implements StockView {
                 .subscribe(o -> {
                     if (o instanceof StockSelectorFragment.StockSymbolWrapper) {
                         String stockName = ((StockSelectorFragment.StockSymbolWrapper) o).stockName;
-                        SharedPreferencesHelper.setLastViewedStock(stockName);
-                        currentStockName = stockName;
-                        currentStock = null;
-                        stockTrackingBinding.setStock(null);
-                        stockPresenter.fetchstock(((StockSelectorFragment.StockSymbolWrapper) o).stockName, false, false);
+                        stockPresenter.fetchstock(stockName, false, false);
                     }
                 }, throwable -> throwable.printStackTrace());
     }
@@ -149,7 +145,8 @@ public class StockTrackingFragment extends BaseFragment implements StockView {
 
     @Override
     public void showError(String message) {
-        swipeRefreshLayout.setRefreshing(false);
+        if (swipeRefreshLayout != null)
+            swipeRefreshLayout.setRefreshing(false);
         if (currentStock == null) {
             stockTrackingBinding.setShowRetry(true);
             stockTrackingBinding.setRetryMessage(message);
@@ -173,6 +170,7 @@ public class StockTrackingFragment extends BaseFragment implements StockView {
         if (stock != null) {
             if (!stock.isValidStock()) {
                 showError(StringUtils.getString(R.string.invalid_stock));
+                stockPresenter.unsubscribe();
                 openStockSelector();
                 return;
             }
@@ -180,12 +178,14 @@ public class StockTrackingFragment extends BaseFragment implements StockView {
 
             stockTrackingBinding.setStock(stock);
             currentStock = stock;
+            currentStockName = stock.getStockName();
+            SharedPreferencesHelper.setLastViewedStock(currentStockName);
             drawGraph(stock);
         }
     }
 
     private void drawGraph(Stock stock) {
-        if (stock.getHistoricalData() == null) {
+        if (stock.getHistoricalData() == null || stock.getHistoricalData().size() == 0 || lineChart == null) {
             // we don't cache graph data
             return;
         }
@@ -255,7 +255,8 @@ public class StockTrackingFragment extends BaseFragment implements StockView {
         lineChart.setVisibleXRangeMaximum(10);
         lineChart.moveViewToX(100);
         lineChart.setScaleX(1);
-        lineDataSet.setColor(ContextCompat.getColor(StockTrackerApp.getContext(), R.color.colorPrimary));
+        lineDataSet.setColor(ContextCompat.getColor(StockTrackerApp.getContext(), R.color.holo_orange_dark));
+        lineDataSet.setFillColor(ContextCompat.getColor(StockTrackerApp.getContext(), R.color.holo_orange_dark));
 
     }
 

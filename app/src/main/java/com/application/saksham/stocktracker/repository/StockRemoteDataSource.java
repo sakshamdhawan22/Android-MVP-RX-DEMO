@@ -1,5 +1,7 @@
 package com.application.saksham.stocktracker.repository;
 
+import android.support.annotation.VisibleForTesting;
+
 import com.application.saksham.stocktracker.models.Stock;
 import com.application.saksham.stocktracker.models.StockApiResponse;
 import com.application.saksham.stocktracker.network.RestApi;
@@ -44,7 +46,7 @@ public class StockRemoteDataSource implements StockDataSource {
                 .map(stockApiResponse -> getStockFromStockApiResponse(stockApiResponse));
     }
 
-    private Stock getStockFromStockApiResponse(StockApiResponse stockApiResponse) {
+    public static Stock getStockFromStockApiResponse(StockApiResponse stockApiResponse) {
         Stock stock = new Stock();
         if (stockApiResponse.getErrorMessage() != null) {
             stock.setValidStock(false);
@@ -55,7 +57,7 @@ public class StockRemoteDataSource implements StockDataSource {
         DecimalFormat df = new DecimalFormat("#.##");
 
         stock.setCurrentPrice(Double.valueOf(df.format(stockApiResponse.getTimeSeries15min().get(stockApiResponse.getMetaData()._3LastRefreshed).getClose())));
-        stock.setClosed(!isMarkedOpen());
+        stock.setClosed(!DateUtils.isMarkedOpen());
         stock.setOpeningPrice(Double.valueOf(df.format((stockApiResponse.getTimeSeries15min().get(stockApiResponse.getMetaData()._3LastRefreshed).getOpen()))));
         stock.setChangeInPrice(Double.valueOf(df.format(getChangeInPrice(stock.getCurrentPrice(), stockApiResponse))));
         stock.setIntradayLowPrice(Double.valueOf(df.format((stockApiResponse.getTimeSeries15min().get(stockApiResponse.getMetaData()._3LastRefreshed).getLow()))));
@@ -71,7 +73,7 @@ public class StockRemoteDataSource implements StockDataSource {
         return stock;
     }
 
-    private double getChangeInPrice(double currentPrice, StockApiResponse stockApiResponse) {
+    private static double getChangeInPrice(double currentPrice, StockApiResponse stockApiResponse) {
         Date todayDate = DateUtils.convertStringToDate(stockApiResponse.getMetaData()._3LastRefreshed);
         todayDate.setTime(todayDate.getTime() - 2); // one day before
         if (!stockApiResponse.getTimeSeries15min().containsKey(DateUtils.convertDateToString(todayDate)))
@@ -87,12 +89,5 @@ public class StockRemoteDataSource implements StockDataSource {
     @Override
     public Observable<Void> writeStockData(Stock stock) {
         throw new RuntimeException("writing on remote is not available");
-    }
-
-    private boolean isMarkedOpen() {
-        Calendar dateInUs = DateUtils.getCurrentTimeInUs();
-        int currentHour = dateInUs.get(Calendar.HOUR_OF_DAY);
-        int currentDayOfWeek = dateInUs.get(Calendar.DAY_OF_WEEK);
-        return currentDayOfWeek >= Calendar.MONDAY && currentDayOfWeek <= Calendar.FRIDAY && currentHour >= 9 && currentHour <= 16;
     }
 }

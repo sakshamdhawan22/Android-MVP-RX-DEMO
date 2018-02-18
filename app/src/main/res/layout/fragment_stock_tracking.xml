@@ -118,7 +118,7 @@
                                 android:layout_toRightOf="@id/textview_current_stock_price"
                                 android:gravity="center"
                                 android:text="@{``+stock.getIncreaseDecreaseText}"
-                                android:textColor="@android:color/holo_orange_dark"
+                                android:textColor="@{stock.changeInPrice>=0?@android:color/holo_green_light:@android:color:@android:color/holo_red_light}"
                                 android:textSize="@dimen/tiny_text_size"
                                 android:textStyle=""
                                 android:visibility="@{stock.changeInPrice ==0?View.INVISIBLE:View.VISIBLE}" />

@@ -1,8 +1,6 @@
 package com.application.saksham.stocktracker.fragments;
 
-import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,6 +10,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -23,6 +22,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static android.content.Context.INPUT_METHOD_SERVICE;
+
 /**
  * Created by Saksham Dhawan on 2/17/18.
  */
@@ -32,6 +33,8 @@ public class StockSelectorFragment extends BottomSheetDialogFragment {
     @BindView(R.id.input_stock)
     EditText stockEditText;
     View mView;
+    @BindView(R.id.button_stock_selection)
+    Button stockSeletionButton;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,7 +48,6 @@ public class StockSelectorFragment extends BottomSheetDialogFragment {
         dialog.setContentView(mView);
         ButterKnife.bind(this, mView);
         focusEditTextAndOpenKeyboard();
-        stockEditText.setOnFocusChangeListener(new MyFocusChangeListener());
 
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) ((View) mView.getParent()).getLayoutParams();
         CoordinatorLayout.Behavior behavior = params.getBehavior();
@@ -58,11 +60,7 @@ public class StockSelectorFragment extends BottomSheetDialogFragment {
 
 
     private void focusEditTextAndOpenKeyboard() {
-        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-        stockEditText.requestFocus();
-        stockEditText.performClick();
+        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
 
     public static StockSelectorFragment getInstance() {
@@ -98,27 +96,14 @@ public class StockSelectorFragment extends BottomSheetDialogFragment {
 
     private void removeFocusAndCloseKeyboard() {
         stockEditText.requestFocus();
-        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(stockEditText.getRootView().getWindowToken(), 0);
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(stockEditText.getWindowToken(), 0);
     }
 
     public class StockSymbolWrapper {
         public String stockName;
-
         public StockSymbolWrapper(String stockName) {
             this.stockName = stockName;
-        }
-    }
-    private class MyFocusChangeListener implements View.OnFocusChangeListener {
-
-        public void onFocusChange(View v, boolean hasFocus){
-
-            if(v.getId() == R.id.input_stock && !hasFocus) {
-
-                InputMethodManager imm =  (InputMethodManager) StockTrackerApp.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-
-            }
         }
     }
 }

@@ -76,6 +76,7 @@ public class StockPresenter implements BasePresenter {
     @Override
     public void destroy() {
         unsubscribe();
+        stockView = null;
     }
 
     @Override
