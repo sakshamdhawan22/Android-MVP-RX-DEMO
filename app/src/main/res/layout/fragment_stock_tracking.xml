@@ -132,7 +132,6 @@
                                 android:layout_centerHorizontal="true"
                                 android:text="@string/market_closed"
                                 android:textSize="@dimen/tiny_text_size"
-                                android:visibility="@{stock.closed?View.VISIBLE:View.GONE}"
 
                                 />
                         </RelativeLayout>
