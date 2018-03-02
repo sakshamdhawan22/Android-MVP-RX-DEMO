@@ -1,5 +1,7 @@
 package com.application.saksham.stocktracker.network;
 
+import com.application.saksham.stocktracker.BuildConfig;
+
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -30,7 +32,10 @@ public class RetrofitService {
                 .readTimeout(120, TimeUnit.SECONDS);
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        if(BuildConfig.DEBUG)
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        else
+            interceptor.setLevel(HttpLoggingInterceptor.Level.NONE);
 
 
         OkHttpClient okHttpClient = builder
