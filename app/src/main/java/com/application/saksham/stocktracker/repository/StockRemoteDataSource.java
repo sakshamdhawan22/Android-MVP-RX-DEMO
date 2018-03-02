@@ -19,7 +19,7 @@ import rx.schedulers.Schedulers;
 
 public class StockRemoteDataSource implements StockDataSource {
 
-    public static final String API_KEY = "IFCESQ5S8658A7XW";
+    public static final String API_KEY = ""; // put your api key here
 
 
     private static StockRemoteDataSource stockRemoteDataSource;
