@@ -20,6 +20,6 @@ This app is a basic stock tracker that shows you  the current stock price, lowes
 the price history based on the data provided from https://www.alphavantage.co/.
 
 
-<img src="https://i.imgur.com/4RG2Jpg.png" width="100">
+<img src="https://i.imgur.com/4RG2Jpg.png" width="400">
 
-<img src="https://i.imgur.com/E3VXC6W.png" width="100">
+<img src="https://i.imgur.com/E3VXC6W.png" width="400">
