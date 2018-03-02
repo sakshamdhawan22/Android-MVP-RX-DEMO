@@ -129,6 +129,9 @@ public class StockTrackingFragment extends BaseFragment implements StockView {
                 }, throwable -> throwable.printStackTrace());
 
 
+        if(StockRemoteDataSource.API_KEY.equals("")){
+            Toast.makeText(StockTrackerApp.getContext(),"Cannot run this project without a valid api key. Please get one from alphavantage.co",Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
