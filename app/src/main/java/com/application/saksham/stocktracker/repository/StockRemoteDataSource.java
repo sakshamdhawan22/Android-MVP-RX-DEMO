@@ -1,16 +1,12 @@
 package com.application.saksham.stocktracker.repository;
 
-import android.support.annotation.VisibleForTesting;
-
 import com.application.saksham.stocktracker.models.Stock;
 import com.application.saksham.stocktracker.models.StockApiResponse;
 import com.application.saksham.stocktracker.network.RestApi;
 import com.application.saksham.stocktracker.network.RetrofitService;
 import com.application.saksham.stocktracker.utils.DateUtils;
-import com.github.mikephil.charting.charts.LineChart;
 
 import java.text.DecimalFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -56,27 +52,29 @@ public class StockRemoteDataSource implements StockDataSource {
 
         DecimalFormat df = new DecimalFormat("#.##");
 
-        stock.setCurrentPrice(Double.valueOf(df.format(stockApiResponse.getTimeSeries15min().get(stockApiResponse.getMetaData()._3LastRefreshed).getClose())));
-        stock.setClosed(!DateUtils.isMarkedOpen());
-        stock.setOpeningPrice(Double.valueOf(df.format((stockApiResponse.getTimeSeries15min().get(stockApiResponse.getMetaData()._3LastRefreshed).getOpen()))));
-        stock.setChangeInPrice(Double.valueOf(df.format(getChangeInPrice(stock.getCurrentPrice(), stockApiResponse))));
-        stock.setIntradayLowPrice(Double.valueOf(df.format((stockApiResponse.getTimeSeries15min().get(stockApiResponse.getMetaData()._3LastRefreshed).getLow()))));
-        stock.setIntradayHighPrice(Double.valueOf(df.format(stockApiResponse.getTimeSeries15min().get(stockApiResponse.getMetaData()._3LastRefreshed).getHigh())));
+        String lastRefreshedString = stockApiResponse.getMetaData()._3LastRefreshed.split("\\s+")[0];
+
+        stock.setCurrentPrice(Double.valueOf(df.format(stockApiResponse.getTimeSeries15min().get(lastRefreshedString).getClose())));
+        stock.setClosed(stockApiResponse.getMetaData()._3LastRefreshed.split("\\s+").length<=1);
+        stock.setOpeningPrice(Double.valueOf(df.format((stockApiResponse.getTimeSeries15min().get(lastRefreshedString).getOpen()))));
+        stock.setChangeInPrice(Double.valueOf(df.format(getChangeInPrice(lastRefreshedString, stock.getCurrentPrice(), stockApiResponse))));
+        stock.setIntradayLowPrice(Double.valueOf(df.format((stockApiResponse.getTimeSeries15min().get(lastRefreshedString).getLow()))));
+        stock.setIntradayHighPrice(Double.valueOf(df.format(stockApiResponse.getTimeSeries15min().get(lastRefreshedString).getHigh())));
         stock.setStockName(stockApiResponse.getMetaData()._2Symbol);
-        stock.setLastUpdatedDate(stockApiResponse.getMetaData()._3LastRefreshed);
+        stock.setLastUpdatedDate(lastRefreshedString);
         stock.setTimeStamp(System.currentTimeMillis());
         stock.setSource(Stock.Source.REMOTE);
 
-        HashMap<String,Double> stockDatePriceMap = new HashMap<>();
-        for(String key: stockApiResponse.getTimeSeries15min().keySet())
-            stockDatePriceMap.put(key,stockApiResponse.getTimeSeries15min().get(key).getClose());
+        HashMap<String, Double> stockDatePriceMap = new HashMap<>();
+        for (String key : stockApiResponse.getTimeSeries15min().keySet())
+            stockDatePriceMap.put(key, stockApiResponse.getTimeSeries15min().get(key).getClose());
         stock.setHistoricalData(stockDatePriceMap);
 
         return stock;
     }
 
-    private static double getChangeInPrice(double currentPrice, StockApiResponse stockApiResponse) {
-        Date todayDate = DateUtils.convertStringToDate(stockApiResponse.getMetaData()._3LastRefreshed);
+    private static double getChangeInPrice(String lastRefreshed, double currentPrice, StockApiResponse stockApiResponse) {
+        Date todayDate = DateUtils.convertStringToDate(lastRefreshed);
         todayDate.setTime(todayDate.getTime() - 2); // one day before
         if (!stockApiResponse.getTimeSeries15min().containsKey(DateUtils.convertDateToString(todayDate)))
             return 0d;

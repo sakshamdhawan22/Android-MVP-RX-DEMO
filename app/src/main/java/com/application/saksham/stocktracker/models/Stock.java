@@ -18,7 +18,7 @@ public class Stock {
     private boolean closed;
     private double intradayLowPrice;
     private double intradayHighPrice;
-    private String lastUpdatedDate;
+    private String lastUpdatedDate; // refers to the last updated date (it doesn't tell you the precise time)
     private HashMap<String, Double> historicalData; // date->stock price map
     private long timeStamp;
     Source source;
