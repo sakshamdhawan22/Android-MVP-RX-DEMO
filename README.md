@@ -18,11 +18,11 @@ serve as a reference to the must have tools when you start building a new androi
 ##  What does this app do ?
 This app is a basic stock tracker that shows you  the realtime current stock price, lowest intraday price, highest intraday price and the price history based on the data provided from https://www.alphavantage.co/. This app can break if the folks at https://www.alphavantage.co/ change the json schema. The prices are fully reactive and refresh in real time. Some examples of the stock symbols you can enter
 
-  MSFT
-  GOOG 
-  MCD
-  BAC
-  NSE:HDFC
+  MSFT<br />
+  GOOG <br />
+  MCD<br />
+  BAC<br />
+  NSE:HDFC<br />
   
   Please refer to https://www.alphavantage.co/ for more information on how to prefix stock market codes.
   
