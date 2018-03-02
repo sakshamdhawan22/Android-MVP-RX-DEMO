@@ -109,6 +109,13 @@ public class StockTrackingFragment extends BaseFragment implements StockView {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if(StockRemoteDataSource.API_KEY.equals("")){
+            String error = "Cannot run this project without a valid api key. Please get one from alphavantage.co";
+            showError(error);
+            return;
+        }
+
         swipeRefreshLayout.setOnRefreshListener(() -> {
             swipeRefreshLayout.setRefreshing(true);
             stockPresenter.fetchstock(currentStockName, true, true);
@@ -127,11 +134,6 @@ public class StockTrackingFragment extends BaseFragment implements StockView {
                         stockPresenter.fetchstock(stockName, false, false);
                     }
                 }, throwable -> throwable.printStackTrace());
-
-
-        if(StockRemoteDataSource.API_KEY.equals("")){
-            Toast.makeText(StockTrackerApp.getContext(),"Cannot run this project without a valid api key. Please get one from alphavantage.co",Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override
