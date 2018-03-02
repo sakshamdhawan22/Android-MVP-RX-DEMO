@@ -19,12 +19,7 @@ serve as a reference to the must have tools when you start building a new androi
 This app is a basic stock tracker that shows you  the current stock price, lowest intraday price, highest intraday price and 
 the price history based on the data provided from https://www.alphavantage.co/.
 
-![alt text](https://i.imgur.com/4RG2Jpg.png | width=100) 
 
-![alt text](https://i.imgur.com/E3VXC6W.png | width=100 )
+<img src="https://i.imgur.com/4RG2Jpg.png" width="100">
 
-
-
-
-
-
+<img src="https://i.imgur.com/E3VXC6W.png" width="100">
