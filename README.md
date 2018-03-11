@@ -1,5 +1,6 @@
 # Android-MVP-RX-DEMO (Stock Tracker)
-This is a sample Android app( a realtime stock tracker) to showcase MVP Android architecture with RxAndroid, Retrofit 2.0, ButterKnife. 
+This is a sample Android app( a realtime stock tracker) to showcase MVP Android architecture with RxAndroid, Retrofit 2.0, ButterKnife. To try out the app right away, go here 
+https://play.google.com/store/apps/details?id=com.application.saksham.stocktracker
 
 I create this boilerplate for all the little apps I create. I'm kind of tired of doing it. Now it's opensource and meant to
 serve as a reference to the must have tools when you start building a new android app.
